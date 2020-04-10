@@ -6,7 +6,7 @@ import (
 	"github.com/ivanlemeshev/algorithms-go/unionfind"
 )
 
-// QuickFind is an implementation of union–find data type. This implementation
+// QuickUnion is an implementation of union–find data type. This implementation
 // uses quick union. The constructor takes O(n) time, where n is the number of
 // sites. The union and find operations take O(n) time in the worst case. The
 // count operation takes O(1) time.
