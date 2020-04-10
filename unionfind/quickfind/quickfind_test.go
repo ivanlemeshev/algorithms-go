@@ -1,13 +1,12 @@
 package unionfind
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestQuickFind(t *testing.T) { // nolint:funlen
+func TestUnion(t *testing.T) {
 	uf := New(10)
 
 	t.Run("index is less than 0", func(t *testing.T) {
@@ -20,96 +19,128 @@ func TestQuickFind(t *testing.T) { // nolint:funlen
 		assert.Equal(t, "index 10 is not between 0 and 9", err.Error())
 	})
 
-	union := [][]int{
-		{4, 3},
-		{3, 8},
-		{6, 5},
-		{9, 4},
-		{2, 1},
-		{8, 9},
-		{5, 0},
-		{7, 2},
-		{6, 1},
-	}
+	t.Run("index between 0 and n", func(t *testing.T) {
+		assert.Nil(t, uf.Union(0, 9))
+		assert.Nil(t, uf.Union(1, 9))
+		assert.Nil(t, uf.Union(4, 5))
+	})
 
-	for _, p := range union {
-		first := p[0]
-		second := p[1]
+	t.Run("union twice", func(t *testing.T) {
+		assert.Nil(t, uf.Union(3, 5))
+		assert.Nil(t, uf.Union(3, 5))
+	})
+}
 
-		name := fmt.Sprintf("union (%d,%d)", first, second)
+func TestCount(t *testing.T) {
+	uf := New(5)
 
-		t.Run(name, func(t *testing.T) {
-			assert.Nil(t, uf.Union(first, second))
-		})
-	}
+	// 1 2 3 4 0
+	assert.Equal(t, 5, uf.Count())
 
-	connected := [][]int{
-		{3, 4},
-		{4, 3},
-		{3, 8},
-		{8, 3},
-		{4, 8},
-		{8, 4},
-		{0, 5},
-		{5, 6},
-		{6, 1},
-		{1, 2},
-		{2, 7},
-		{0, 7},
-		{4, 9},
-		{8, 9},
-	}
+	// 1 2 3 4-0
+	assert.Nil(t, uf.Union(0, 4))
+	assert.Equal(t, 4, uf.Count())
 
-	for _, p := range connected {
-		first := p[0]
-		second := p[1]
+	// 1 2-3 4-0
+	assert.Nil(t, uf.Union(2, 3))
+	assert.Equal(t, 3, uf.Count())
 
-		name := fmt.Sprintf("connected (%d,%d)", first, second)
+	// 1-2-3 4-0
+	assert.Nil(t, uf.Union(1, 2))
+	assert.Equal(t, 2, uf.Count())
 
-		t.Run(name, func(t *testing.T) {
-			isConnected, err := uf.IsConnected(first, second)
-			assert.True(t, isConnected)
-			assert.Nil(t, err)
-		})
-	}
+	// 1-2-3-4-0
+	assert.Nil(t, uf.Union(4, 3))
+	assert.Equal(t, 1, uf.Count())
+}
 
-	notConnected := [][]int{
-		{0, 3},
-		{0, 4},
-		{0, 8},
-		{0, 9},
-		{1, 3},
-		{1, 4},
-		{1, 8},
-		{1, 9},
-		{2, 3},
-		{2, 4},
-		{2, 8},
-		{2, 9},
-		{5, 3},
-		{5, 4},
-		{5, 8},
-		{5, 9},
-		{6, 3},
-		{6, 4},
-		{6, 8},
-		{6, 9},
-		{7, 3},
-		{7, 4},
-		{7, 8},
-		{7, 9},
-	}
+func TestIsConnected(t *testing.T) {
+	uf := New(5)
 
-	for _, p := range notConnected {
-		first := p[0]
-		second := p[1]
+	assert.Nil(t, uf.Union(0, 4))
+	assert.Nil(t, uf.Union(2, 3))
+	assert.Nil(t, uf.Union(1, 2))
 
-		name := fmt.Sprintf("not connected (%d,%d)", first, second)
+	// 1-2-3 4-0
 
-		t.Run(name, func(t *testing.T) {
-			isConnected, err := uf.IsConnected(first, second)
-			assert.False(t, isConnected)
-			assert.Nil(t, err)
-		})
-	}
+	t.Run("index is less than 0", func(t *testing.T) {
+		isConnected, err := uf.IsConnected(-1, 4)
+		assert.False(t, isConnected)
+		assert.Equal(t, "index -1 is not between 0 and 4", err.Error())
+	})
+
+	t.Run("index is more or equal to n", func(t *testing.T) {
+		isConnected, err := uf.IsConnected(0, 5)
+		assert.False(t, isConnected)
+		assert.Equal(t, "index 5 is not between 0 and 4", err.Error())
+	})
+
+	t.Run("index between 0 and n", func(t *testing.T) {
+		isConnected, err := uf.IsConnected(4, 0)
+		assert.True(t, isConnected)
+		assert.Nil(t, err)
+
+		isConnected, err = uf.IsConnected(1, 3)
+		assert.True(t, isConnected)
+		assert.Nil(t, err)
+
+		isConnected, err = uf.IsConnected(1, 2)
+		assert.True(t, isConnected)
+		assert.Nil(t, err)
+
+		isConnected, err = uf.IsConnected(2, 3)
+		assert.True(t, isConnected)
+		assert.Nil(t, err)
+
+		isConnected, err = uf.IsConnected(3, 4)
+		assert.False(t, isConnected)
+		assert.Nil(t, err)
+
+		isConnected, err = uf.IsConnected(1, 0)
+		assert.False(t, isConnected)
+		assert.Nil(t, err)
+	})
+}
+
+func TestFind(t *testing.T) {
+	uf := New(5)
+
+	t.Run("index is less than 0", func(t *testing.T) {
+		v, err := uf.Find(-1)
+		assert.Equal(t, 0, v)
+		assert.Equal(t, "index -1 is not between 0 and 4", err.Error())
+	})
+
+	t.Run("index is more or equal to n", func(t *testing.T) {
+		v, err := uf.Find(5)
+		assert.Equal(t, 0, v)
+		assert.Equal(t, "index 5 is not between 0 and 4", err.Error())
+	})
+
+	t.Run("index between 0 and n", func(t *testing.T) {
+		assert.Nil(t, uf.Union(0, 4))
+
+		v, err := uf.Find(0)
+		assert.Equal(t, 4, v)
+		assert.Nil(t, err)
+
+		v, err = uf.Find(4)
+		assert.Equal(t, 4, v)
+		assert.Nil(t, err)
+
+		assert.Nil(t, uf.Union(2, 3))
+		assert.Nil(t, uf.Union(1, 2))
+
+		v, err = uf.Find(1)
+		assert.Equal(t, 3, v)
+		assert.Nil(t, err)
+
+		v, err = uf.Find(2)
+		assert.Equal(t, 3, v)
+		assert.Nil(t, err)
+
+		v, err = uf.Find(3)
+		assert.Equal(t, 3, v)
+		assert.Nil(t, err)
+	})
 }
