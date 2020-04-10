@@ -4,6 +4,9 @@ install:
 test:
 	go test --cover ./...
 
+lint:
+	golangci-lint run -c .golangci.yml ./...
+
 test-ci:
 	curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 	chmod +x ./cc-test-reporter
@@ -12,6 +15,6 @@ test-ci:
 	sed -i -e 's/github.com\/ivanlemeshev\/algorithms-go\///g' c.out
 	./cc-test-reporter after-build
 
-lint:
-	go get github.com/golangci/golangci-lint/cmd/golangci-lint
-	golangci-lint run
+lint-ci:
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.24.0
+	golangci-lint run -c .golangci.yml ./...
