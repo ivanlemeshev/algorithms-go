@@ -5,7 +5,7 @@ test:
 	go test --cover ./...
 
 test-ci:
-	go get github.com/axw/gocov/gocov
+	GO111MODULE=off go get github.com/axw/gocov/gocov
 	go test -race -coverprofile=c.out ./...
 	gocov convert c.out >> coverage.json
 
