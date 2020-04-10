@@ -9,6 +9,7 @@ test-ci:
 	chmod +x ./cc-test-reporter
 	./cc-test-reporter before-build
 	go test -race -coverprofile c.out ./...
+	sed -i -e 's/github.com\/ivanlemeshev\/algorithms-go\///g' c.out
 	./cc-test-reporter after-build
 
 lint:
