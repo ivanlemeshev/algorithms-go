@@ -5,9 +5,11 @@ test:
 	go test --cover ./...
 
 test-ci:
-	GO111MODULE=off go get github.com/axw/gocov/gocov
-	go test -race -coverprofile=c.out ./...
-	gocov convert c.out >> coverage.json
+	curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+	chmod +x ./cc-test-reporter
+	./cc-test-reporter before-build
+	go test -race -coverprofile c.out ./...
+	./cc-test-reporter after-build
 
 lint:
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint

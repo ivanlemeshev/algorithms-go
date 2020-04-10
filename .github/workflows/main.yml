@@ -29,10 +29,6 @@ jobs:
     #   run: make lint
 
     - name: Test
-      uses: paambaati/codeclimate-action@v2.4.0
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-      with:
-        coverageCommand: make test-ci
-        coverageLocations: "./coverage.json:gocov"
-        debug: true
+      run: make test-ci
