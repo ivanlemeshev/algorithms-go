@@ -33,5 +33,6 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       with:
-        coverageCommand: go test -race -coverprofile=c.out ./...
+        coverageCommand: make test-ci
+        coverageLocations: "./coverage.json:gocov"
         debug: true
