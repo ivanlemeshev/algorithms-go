@@ -24,11 +24,14 @@ jobs:
 
     - name: Install
       run: make install
+    
+    - name: Lint
+      run: make lint
 
     - name: Test
       uses: paambaati/codeclimate-action@v2.5.6
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       with:
-        coverageCommand: make test
+        coverageCommand: make test-ci
         debug: true
