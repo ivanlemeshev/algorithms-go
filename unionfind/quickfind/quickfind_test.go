@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestQuickFind(t *testing.T) {
+func TestQuickFind(t *testing.T) { // nolint:funlen
 	uf := New(10)
 
 	t.Run("index is less than 0", func(t *testing.T) {
@@ -33,10 +33,13 @@ func TestQuickFind(t *testing.T) {
 	}
 
 	for _, p := range union {
-		name := fmt.Sprintf("union (%d,%d)", p[0], p[1])
+		first := p[0]
+		second := p[1]
+
+		name := fmt.Sprintf("union (%d,%d)", first, second)
 
 		t.Run(name, func(t *testing.T) {
-			assert.Nil(t, uf.Union(p[0], p[1]))
+			assert.Nil(t, uf.Union(first, second))
 		})
 	}
 
@@ -58,10 +61,13 @@ func TestQuickFind(t *testing.T) {
 	}
 
 	for _, p := range connected {
-		name := fmt.Sprintf("connected (%d,%d)", p[0], p[1])
+		first := p[0]
+		second := p[1]
+
+		name := fmt.Sprintf("connected (%d,%d)", first, second)
 
 		t.Run(name, func(t *testing.T) {
-			isConnected, err := uf.IsConnected(p[0], p[1])
+			isConnected, err := uf.IsConnected(first, second)
 			assert.True(t, isConnected)
 			assert.Nil(t, err)
 		})
@@ -95,10 +101,13 @@ func TestQuickFind(t *testing.T) {
 	}
 
 	for _, p := range notConnected {
-		name := fmt.Sprintf("not connected (%d,%d)", p[0], p[1])
+		first := p[0]
+		second := p[1]
+
+		name := fmt.Sprintf("not connected (%d,%d)", first, second)
 
 		t.Run(name, func(t *testing.T) {
-			isConnected, err := uf.IsConnected(p[0], p[1])
+			isConnected, err := uf.IsConnected(first, second)
 			assert.False(t, isConnected)
 			assert.Nil(t, err)
 		})

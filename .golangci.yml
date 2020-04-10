@@ -13,6 +13,8 @@ output:
 linters:
   enable-all: true
   fast: false
+  disable:
+    - stylecheck
 
 issues:
   exclude-use-default: false
